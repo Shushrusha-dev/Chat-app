@@ -12,19 +12,18 @@ app.config['SESSION_TYPE'] = "filesystem"
 db = SQLAlchemy(app)
 socketio = SocketIO(app, cors_allowed_origins='*', async_mode='eventlet')
 
-# ----------------- User Model -----------------
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-# ----------------- Message Model -----------------
+
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     content = db.Column(db.String(500), nullable=False)
 
-# ----------------- Login Manager -----------------
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -37,7 +36,7 @@ def load_user(user_id):
 def create_tables():
     db.create_all()
 
-# ----------------- Routes -----------------
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':

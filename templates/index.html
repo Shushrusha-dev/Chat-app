@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+</head>
+<body>
+    <div id="chat-container">
+        <h2>Chat Room</h2>
+        <p>Welcome, {{ username }}! <a href="/logout">Logout</a></p>
+
+        <div id="messages">
+            {% for msg in messages %}
+                <div class="{% if msg.username == username %}sent{% else %}received{% endif %}" id="message-{{ msg.id }}">
+                    <strong>{{ msg.username }}:</strong> {{ msg.content }}
+                    
+                    <!-- Delete Options -->
+                    <button onclick="deleteMessage('{{ msg.id }}', false)">🗑 Delete for Me</button>
+                    
+                    {% if msg.username == username %}
+                        <button onclick="deleteMessage('{{ msg.id }}', true)">❌ Delete for Everyone</button>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <input type="text" id="message-input" placeholder="Type a message..." />
+        <button id="send-button">Send</button>
+    </div>
+
+    <script>
+        var socket = io.connect("http://localhost:5000");
+
+        // Sending messages
+        document.getElementById("send-button").addEventListener("click", function() {
+            let message = document.getElementById("message-input").value.trim();
+            if (message !== "") {
+                socket.emit("send_message", { username: "{{ username }}", message: message });
+                document.getElementById("message-input").value = "";
+            }
+        });
+
+        // Listening for new messages
+        socket.on("new_message", function(data) {
+            let messageContainer = document.getElementById("messages");
+            let newMessage = document.createElement("div");
+            newMessage.classList.add(data.username === "{{ username }}" ? "sent" : "received");
+            newMessage.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+            messageContainer.appendChild(newMessage);
+        });
+
+        // Message deletion function
+        function deleteMessage(messageId, deleteForEveryone) {
+            if (!deleteForEveryone) {
+                document.getElementById(`message-${messageId}`).style.display = "none";
+                return;
+            }
+
+            fetch(`/delete_message/${messageId}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`message-${messageId}`).remove();
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => console.error("Error deleting message:", error));
+        }
+    </script>
+</body>
+</html>

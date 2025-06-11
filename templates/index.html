@@ -16,7 +16,7 @@
                 <div class="{% if msg.username == username %}sent{% else %}received{% endif %}" id="message-{{ msg.id }}">
                     <strong>{{ msg.username }}:</strong> {{ msg.content }}
                     
-                    <!-- Delete Options -->
+                    
                     <button onclick="deleteMessage('{{ msg.id }}', false)">🗑 Delete for Me</button>
                     
                     {% if msg.username == username %}
@@ -33,7 +33,7 @@
     <script>
         var socket = io.connect("http://localhost:5000");
 
-        // Sending messages
+        
         document.getElementById("send-button").addEventListener("click", function() {
             let message = document.getElementById("message-input").value.trim();
             if (message !== "") {
@@ -42,7 +42,7 @@
             }
         });
 
-        // Listening for new messages
+    
         socket.on("new_message", function(data) {
             let messageContainer = document.getElementById("messages");
             let newMessage = document.createElement("div");
@@ -51,7 +51,7 @@
             messageContainer.appendChild(newMessage);
         });
 
-        // Message deletion function
+        
         function deleteMessage(messageId, deleteForEveryone) {
             if (!deleteForEveryone) {
                 document.getElementById(`message-${messageId}`).style.display = "none";

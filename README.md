@@ -15,7 +15,7 @@ Each user can delete their own messages and see other users' messages instantly.
 
 ## Screenshots
 ### Register Page
-![Register](screenshots/register.png)
+![Register](Register.png)
 
 ### Login Page
 ![Login](screenshots/login.png)

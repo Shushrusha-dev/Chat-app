@@ -18,10 +18,10 @@ Each user can delete their own messages and see other users' messages instantly.
 ![Register](Register.png)
 
 ### Login Page
-![Login](screenshots/login.png)
+![Login](login.png)
 
 ### Chat Room
-![Chat Room](screenshots/chatroom.png)
+![Chat Room](chatroom.png)
 
 
 
